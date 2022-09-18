@@ -1,62 +1,56 @@
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Data;
 
-
-
-namespace myfinance_web_netcore.infra
+namespace myfinance_web_netcore.Infra
 {
     public class DAL
     {
-        private SqlConnection conn; //objeto pra criar conexão com o DB
+        private SqlConnection conn;
         private string connectionString;
-        public static IConfiguration? Configuration; //a ? indica que é um singleton
+        public static IConfiguration Configuration;
         private static DAL Instancia;
-        // private static object? get;
-
-        public static DAL getInstancia()
-        {            
-            get{
-                if(Instancia == null)
-                   Instancia = new();                
-                return Instancia;
-            };
-        }
-        private DAL()
+        public static DAL GetInstancia
         {
-            connectionString = Configuration.GetValue<string>("connectionString"); //mesmo nome pra colocar no arquivo de config
+            get{
+                if(Instancia==null)
+                    Instancia = new();
+                return Instancia;
+            }
         }
 
+        public DAL()
+        {
+            connectionString= Configuration.GetValue<string>("connectionString");
+        }
         public void Conectar()
         {
-            
             conn = new();
-            conn.ConnectionString = connectionString;
+            conn.ConnectionString=connectionString; 
+            //f(conn.State)
             conn.Open();
         }
-        
-        public DataTable getDataTable(string sql)
-        {
-            var dataTable = new DataTable();
-            //pegar as coisas no banco
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(sql, conn);
-            dataAdapter.Fill(dataTable);
-            
 
-            return dataTable;
-        }
-        //insert, update, delete
-        public void RunSqlCommand (string str )
-        {
-            SqlCommand command= new SqlCommand(str ,conn);
-            command.ExecuteNonQuery();
-
-        }
-
-        public void Disconnect()
+        public void Desconectar()
         {
             conn.Close();
         }
-
-        
+        //SELECT
+        public DataTable RetornarDataTable(string sql)
+        {
+            var dataTable = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter(sql,conn);
+            da.Fill(dataTable);
+            return dataTable;
+        }
+        //INSERT, UODATE, DELETE
+        public void ExecutarComandoSql(string sql)
+        {
+            SqlCommand comando = new SqlCommand(sql,conn);
+            comando.ExecuteNonQuery();
+        }
     }
 }
