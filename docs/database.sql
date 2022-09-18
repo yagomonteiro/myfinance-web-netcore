@@ -1,50 +1,38 @@
-create database my_finance;
-use my_finance;
-
-create table plano_contas(
-	id int identity(1,1) not null,
-	descricao varchar(50) not null,
-	tipo char(1) not null,
-	primary key(id)
-);
-
-create table transacao(
-	id bigint  identity(1,1) not null,
-	data datetime not null,
-	valor decimal(9,2) not null,
-	tipo char(1) not null,
-	historico text null,
-	id_plano_conta  int not null
-	primary key(id),
-	foreign key(id_plano_conta) references plano_contas
-);
-
-select * from plano_contas;
-
-insert into plano_contas(descricao,tipo) values('Aluguel', 'C');
-insert into plano_contas(descricao,tipo) values('Alimnetação', 'D');
-insert into plano_contas(descricao,tipo) values('Gasolina', 'D');
-insert into plano_contas(descricao,tipo) values('Vigens', 'C');
-
-delete from plano_contas where id=6;
-update plano_contas set tipo ='D' where id=1; 
-
-select * from transacao
-
-insert into transacao(data, valor, tipo, historico,id_plano_conta)
-values(getdate(),100.47, 'D', 'Gasolina para Viagem', 3);
-
-insert into transacao(data, valor, tipo, historico,id_plano_conta)
-values(getdate(),10.47, 'D', 'Almoço', 2);
-
--- todas as transações menores que 50 pila
-select * from transacao where valor<50
-
-select sum(valor) as total from transacao where tipo = 'D'
-
---consulta conjunta 
-select data, valor, t.tipo, historico, p.descricao as 'plano_conta'
-from transacao as t inner join plano_contas as p
-on p.id = t.id_plano_conta
-
-
+USE [my_finance]
+GO
+/****** Object:  Table [dbo].[plano_contas]    Script Date: 13/09/2022 15:57:03 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[plano_contas](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[descricao] [varchar](50) NOT NULL,
+	[tipo] [char](1) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[transacao]    Script Date: 13/09/2022 15:57:03 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[transacao](
+	[id] [bigint] IDENTITY(1,1) NOT NULL,
+	[data] [datetime] NOT NULL,
+	[valor] [decimal](18, 2) NOT NULL,
+	[tipo] [char](1) NOT NULL,
+	[historico] [text] NULL,
+	[id_plano_conta] [int] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[transacao]  WITH CHECK ADD FOREIGN KEY([id_plano_conta])
+REFERENCES [dbo].[plano_contas] ([id])
+GO
