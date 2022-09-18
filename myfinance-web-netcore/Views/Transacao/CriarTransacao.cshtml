@@ -1,0 +1,98 @@
+@using System.Globalization
+@model TransacaoModel
+@{
+    ViewData["Title"] = "Registro de Transação Financeira";   
+}
+
+@{
+    var vData=string.Empty;
+    var vHistorico=string.Empty;
+    var vTipo=string.Empty;
+    var vValor=string.Empty;
+    var vId= 0;
+    var vPlanoContaId=0;
+        try
+            {   
+                vId = int.Parse(@ViewBag.Registro.Id.ToString());
+                vData = DateTime.Parse(@ViewBag.Registro.Data.ToString()).ToString("yyyy-MM-dd");
+                vPlanoContaId = int.Parse(ViewBag.Registro.IdPlanoConta.ToString());
+                vHistorico=@ViewBag.Registro.Historico.ToString();
+                vTipo = @ViewBag.Registro.Tipo.ToString();
+                CultureInfo cultureinfo = CultureInfo.CurrentCulture;
+                vValor = @ViewBag.Registro.Valor.ToString(cultureinfo);
+
+            }
+        catch{}
+}
+
+<script>
+function formatarMoeda() {
+        var elemento = document.getElementById('valor');
+        var valor = elemento.value;
+
+        valor = valor + '';
+        valor = parseInt(valor.replace(/[\D]+/g, ''));
+        valor = valor + '';
+        valor = valor.replace(/([0-9]{2})$/g, ",$1");
+
+        if (valor.length > 6) {
+            valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+        }
+
+        elemento.value = valor;
+        if(valor == 'NaN') elemento.value = '';
+    }
+</script>
+
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-controller="Transacao" asp-action="CriarTransacao">
+<input type="hidden" asp-for="Id" value="@vId"><br>
+
+<div class="form-group">
+    <label>Data:</label> 
+    <input type="date" class="form-control" asp-for="Data" value="@vData">
+    <span asp-validation-for="Data" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+<label>Tipo:</label>
+<input type="text" class="form-control"  asp-for="Tipo" value="@vTipo">
+</div>
+
+<div class="form-group">
+<label>Valor:</label>
+<input type="text" id="valor" class="form-control" asp-for="Valor" step="0.01" value="@vValor" onkeyup="formatarMoeda()" >
+<span asp-validation-for="Valor" class="text-danger"></span> 
+</div>
+
+<div class="form-group">
+    <label>Histórico:</label>
+    @Html.TextArea("Historico", vHistorico, new {@class="form-control"})
+    <span asp-validation-for="Historico" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+<label>Transações</label>
+    <select asp-for="IdPlanoConta" class="form-control">
+    @{
+        foreach(var item in (List<PlanoContaModel>)ViewBag.ListaPlanoContas)
+            {
+                    if(item.Id.ToString()== vPlanoContaId.ToString())
+                    {
+                        <option selected value="@item.Id.ToString()">@item.Descricao.ToString()</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Id.ToString()">@item.Descricao.ToString()</option>
+                    }
+            }
+    }
+    </select>
+</div>
+<br>
+<button type="submit" class="btn btn-block btn-success">Enviar</button>
+
+</form>
+

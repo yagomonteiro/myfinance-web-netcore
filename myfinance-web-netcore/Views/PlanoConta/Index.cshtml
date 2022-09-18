@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = " Plano Contas";
+   
+}
+
+<div class="text-center">
+    <h1 class="display-4"> Plano de Contas</h1>
+</div>
+
+<hr>
+<button type="button" class="btn btn-block btn-primary" onclick="CriarPlanoConta()">Criar Plano de Conta</button> 
+<hr>
+<table class='table table-bordered'>
+    <tr>
+        <th>#</th>
+        <th>#</th>
+        <th>ID</th>
+        <th>Descrição</th>
+        <th>Tipo</th>
+    </tr>
+@{
+    foreach(var item in (List<PlanoContaModel>)ViewBag.Lista)
+    {
+        <tr>
+            <td><button type="button" class="btn btn-block btn-warning" onclick="EditarPlanoConta(@item.Id.ToString())">Editar</button></td>
+            <td><button type="button" class="btn btn-block btn-danger" onclick="ExcluirPlanoConta(@item.Id.ToString())">Excluir</button></td>
+            <td>@item.Id</td>             
+            <td>@item.Descricao</td>
+            <td>@item.Tipo</td>
+        </tr>
+    }
+
+}
+
+</table>
+
+<script>
+    function CriarPlanoConta()
+    {
+        window.location.href = "../PlanoConta/CriarPlanoConta";
+    }
+    
+    function EditarPlanoConta(id)
+    {
+        window.location.href="../PlanoConta/CriarPlanoConta/"+id;
+    }
+    
+    function ExcluirPlanoConta(id)
+    {
+        if (confirm("Deseja realmente excluir esse plano de conta?"))
+        window.location.href="../PlanoConta/ExcluirPlanoConta/"+id;
+    }
+    
+</script>

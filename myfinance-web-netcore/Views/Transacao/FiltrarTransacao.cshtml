@@ -1,0 +1,82 @@
+@using System.Globalization
+
+@model TransacaoModel
+@{
+    ViewData["Title"] = "Relatório de Transações Financeiras";   
+}
+
+
+@{
+    var vData1=string.Empty;
+    var vData2=string.Empty;
+    var vId= 0;
+    var vData=string.Empty;
+    var vHistorico=string.Empty;
+    var vDescricao=string.Empty;
+    var vTipo=string.Empty;
+    var vValor=string.Empty;
+    var vPlanoContaId=0;
+try
+{   
+    vId = int.Parse(@ViewBag.Registro.Id.ToString());
+    vData1 = DateTime.Parse(@ViewBag.Registro.Data1.ToString()).ToString("yyyyMMdd");
+    vData2 = DateTime.Parse(@ViewBag.Registro.Data2.ToString()).ToString("yyyyMMdd");
+    vData = DateTime.Parse(@ViewBag.Registro.Data.ToString()).ToString("yyyy-MM-dd");
+    vPlanoContaId = int.Parse(ViewBag.Registro.IdPlanoConta.ToString());
+    vHistorico=@ViewBag.Registro.Historico.ToString();
+    vDescricao=@ViewBag.Registro.Descricao.ToString();
+    vTipo = @ViewBag.Registro.Tipo.ToString();
+    
+    CultureInfo cultureinfo = CultureInfo.CurrentCulture;
+    vValor = @ViewBag.Registro.Valor.ToString(cultureinfo);
+    
+}
+catch{}
+
+}
+<div class="text-center">
+<h1 class="display-4">@ViewData["Title"]</h1>
+</div>
+<form asp-controller="Transacao" asp-action="FiltrarTransacao">
+
+        <div class="form-group">
+            <label>Data Inicial:</label> 
+            <input type="date" class="form-control" asp-for="Data1" value="@vData1">
+            <span asp-validation-for="Data1" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label>Data Final:</label> 
+            <input type="date" class="form-control" asp-for="Data2" value="@vData2">
+            <span asp-validation-for="Data2" class="text-danger"></span>
+        </div>
+<hr>
+<table class='table table-bordered'>
+<tr>
+    <th>ID</th>
+    <th>Data</th>
+    <th>Tipo</th>
+    <th>Valor</th>
+    <th>Descrição</th>
+    <th>Plano de Conta</th>
+</tr>
+@{
+    if(@ViewBag.Lista!=null)
+    {
+        foreach(var item in (List<TransacaoModel>)ViewBag.Lista)
+        {
+            <tr>
+                <td>@item.Id</td>             
+                <td>@item.Data.ToString("dd/MM/yyyy")</td>
+                <td>@item.Tipo</td>
+                <td>R$ @item.Valor</td>
+                <td>@item.Historico</td>
+                <td>@item.Descricao</td>
+            </tr>
+        }
+    }  
+}
+</table>
+<br>
+<button type="submit" class="btn btn-block btn-success">Filtrar</button>
+<hr>
+</form>

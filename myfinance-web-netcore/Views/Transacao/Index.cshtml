@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = " Transações";
+ 
+}
+
+<div class="text-center">
+    <h1 class="display-4"> Transações</h1>
+</div>
+
+<hr>
+<button type="button" class="btn btn-block btn-primary" onclick="CriarTransacao()">Registrar Transação</button> 
+
+<button type="button" class="btn btn-block btn-primary" onclick="FiltrarTransacao()">Relatório de Transações</button> 
+
+<hr>
+<table class='table table-bordered'>
+    <tr>
+        <th>#</th>
+        <th>#</th>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Valor</th>
+        <th>Descrição</th>
+        <th>Tipo</th>
+        <th>Plano Conta</th>
+    </tr>
+@{
+    foreach(var item in (List<TransacaoModel>)ViewBag.Lista)
+    {
+        <tr>
+            <td><button type="button" class="btn btn-block btn-warning" onclick="EditarTransacao(@item.Id.ToString())">Editar</button></td>
+            <td><button type="button" class="btn btn-block btn-danger" onclick="ExcluirTransacao(@item.Id.ToString())">Excluir</button></td>
+            <td>@item.Id</td>             
+            <td>@item.Data.ToString("dd/MM/yyyy")</td>
+            <td>R$ @item.Valor</td>
+            <td>@item.Historico</td>
+            <td>@item.Tipo</td>
+            <td>@item.IdPlanoConta</td>
+            
+        </tr>
+    }
+
+}
+
+</table>
+
+<script>
+    function CriarTransacao()
+    {
+        window.location.href = "../Transacao/CriarTransacao";
+    }
+    
+    function EditarTransacao(id)
+    {
+        window.location.href="../Transacao/CriarTransacao/"+id;
+    }
+    
+    function ExcluirTransacao(id)
+    {
+        if (confirm("Deseja realmente excluir essa transação?"))
+        window.location.href="../Transacao/ExcluirTransacao/"+id;
+    }
+
+    function FiltrarTransacao()
+    {
+        window.location.href = "../Transacao/FiltrarTransacao";
+    }
+    
+</script>
